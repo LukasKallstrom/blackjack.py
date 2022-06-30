@@ -2,7 +2,7 @@
 Blackjack in console, python based
 
 
-
+## Rules
 Try getting as close to 21 as possible without going and over and without the dealer getting closer than you to 21.
 
 

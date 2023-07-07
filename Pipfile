@@ -6,6 +6,16 @@ name = "pypi"
 [packages]
 rich = "*"
 ipykernel = "*"
+gym = "*"
+pygame = "*"
+tensorflow = "*"
+"rl.agents" = "*"
+keras-rl = "*"
+matplotlib = "*"
+sns = "*"
+seaborn = "*"
+future = "*"
+gymnasium = "*"
 
 [dev-packages]
 

@@ -13,9 +13,11 @@ pygame.init()
 FONT = pygame.font.SysFont(None, 32)
 BIG_FONT = pygame.font.SysFont(None, 48)
 
+
 def draw_text(surface, text, pos, font=FONT, color=WHITE):
     img = font.render(text, True, color)
     surface.blit(img, pos)
+
 
 def check_winner(player_sum, dealer_sum, bet, chips):
     message = ""
@@ -43,6 +45,7 @@ def check_winner(player_sum, dealer_sum, bet, chips):
         message = 'It is a push.'
     return message, chips
 
+
 def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption('Blackjack')
@@ -59,15 +62,19 @@ def main():
     running = True
 
     while running:
-        for event in pygame.event.get():
+        events = pygame.event.get()
+        for event in events:
             if event.type == pygame.QUIT:
                 running = False
+            elif state == 'waiting':
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                    state = 'betting'
             elif state == 'betting':
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN and bet_input:
                         bet = int(bet_input)
                         state = 'playing'
-                        deck = [2,3,4,5,6,7,8,9,10,10,10,10,11]*4
+                        deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]*4
                         random.shuffle(deck)
                         player_hand = [deck.pop(), deck.pop()]
                         dealer_hand = [deck.pop(), deck.pop()]
@@ -91,47 +98,52 @@ def main():
                     else:
                         state = 'betting'
                         bet_input = ''
-                        message = ''
-
-        screen.fill(BG_COLOR)
-
         if state == 'waiting':
-            draw_text(screen, f'Chips: {chips}', (50,50), BIG_FONT)
-            draw_text(screen, 'Press ENTER to start', (50,100))
+            draw_text(screen, f'Chips: {chips}', (50, 50), BIG_FONT)
+            draw_text(screen, 'Press ENTER to start', (50, 100))
+            draw_text(screen, f'Chips: {chips}', (50, 50), BIG_FONT)
+            draw_text(screen, 'Press ENTER to start', (50, 100))
             if any(event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN for event in pygame.event.get()):
                 state = 'betting'
         elif state == 'betting':
-            draw_text(screen, f'Chips: {chips}', (50,50), BIG_FONT)
-            draw_text(screen, 'Enter bet and press ENTER:', (50,150))
-            draw_text(screen, bet_input, (50,200), BIG_FONT)
+            draw_text(screen, f'Chips: {chips}', (50, 50), BIG_FONT)
+            draw_text(screen, 'Enter bet and press ENTER:', (50, 150))
+            draw_text(screen, bet_input, (50, 200), BIG_FONT)
         elif state in ('playing', 'dealer'):
-            draw_text(screen, f'Bet: {bet}', (50,50))
-            draw_text(screen, f'Chips: {chips}', (200,50))
-            draw_text(screen, f'Your hand: {player_hand} = {sum(player_hand)}', (50,150))
-            draw_text(screen, f"Dealer's hand: {dealer_hand[0]} [?]", (50,200))
-            pygame.draw.rect(screen, BLACK, (50,500,100,40))
-            pygame.draw.rect(screen, BLACK, (200,500,100,40))
-            draw_text(screen, 'Hit', (75,510))
-            draw_text(screen, 'Stay', (220,510))
+            draw_text(screen, f'Bet: {bet}', (50, 50))
+            draw_text(screen, f'Chips: {chips}', (200, 50))
+            draw_text(
+                screen, f'Your hand: {player_hand} = {sum(player_hand)}', (50, 150))
+            draw_text(
+                screen, f"Dealer's hand: {dealer_hand[0]} [?]", (50, 200))
+            pygame.draw.rect(screen, BLACK, (50, 500, 100, 40))
+            pygame.draw.rect(screen, BLACK, (200, 500, 100, 40))
+            draw_text(screen, 'Hit', (75, 510))
+            draw_text(screen, 'Stay', (220, 510))
             if state == 'dealer':
                 while sum(dealer_hand) < 17 or (sum(dealer_hand) < sum(player_hand) and sum(dealer_hand) < 21):
                     dealer_hand.append(deck.pop())
-                message, chips = check_winner(sum(player_hand), sum(dealer_hand), bet, chips)
+                message, chips = check_winner(
+                    sum(player_hand), sum(dealer_hand), bet, chips)
                 state = 'result'
         elif state == 'result':
-            draw_text(screen, message, (50,150), BIG_FONT)
-            draw_text(screen, f'Your hand: {player_hand} = {sum(player_hand)}', (50,250))
-            draw_text(screen, f"Dealer's hand: {dealer_hand} = {sum(dealer_hand)}", (50,300))
+            draw_text(screen, message, (50, 150), BIG_FONT)
+            draw_text(
+                screen, f'Your hand: {player_hand} = {sum(player_hand)}', (50, 250))
+            draw_text(
+                screen, f"Dealer's hand: {dealer_hand} = {sum(dealer_hand)}", (50, 300))
             if chips > 0:
-                draw_text(screen, 'Press ENTER to play again', (50,400))
+                draw_text(screen, 'Press ENTER to play again', (50, 400))
             else:
-                draw_text(screen, 'Out of chips! Press ENTER to quit.', (50,400))
+                draw_text(
+                    screen, 'Out of chips! Press ENTER to quit.', (50, 400))
 
         pygame.display.flip()
         clock.tick(30)
 
     pygame.quit()
     sys.exit()
+
 
 if __name__ == '__main__':
     main()
